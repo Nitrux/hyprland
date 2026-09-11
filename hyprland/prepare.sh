@@ -17,7 +17,6 @@ cat "$debianfolder/patches/00-version" |
     case "$line" in
       +##*)
         cmd="${line#+## }"
-        cmd="${cmd//\"/\\\"}"
         echo "$line"
         IFS= read -r line
         result="$(eval "$cmd" | sed 's/ \+$//')"
