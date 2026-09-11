@@ -1,6 +1,7 @@
 libxcb-errors (0.56.0-1) nitrux; urgency=medium
 
   * Build packages for Nitrux.
+  * Fix Libtool and install-directory substitutions for autoreconf.
 
  -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
 

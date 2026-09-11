@@ -42,7 +42,7 @@ Depends:
  libmuparser-dev,
  liblcms2-dev,
  liblua5.4-dev,
- libglaze-dev (>= 7.0.0),
+ libglaze-dev (>= 0.56.0),
  libhyprlang-dev (>= 0.6.7),
  libhyprcursor-dev (>= 0.1.7),
  libhyprutils-dev (>= 0.11.1),
@@ -50,7 +50,7 @@ Depends:
  libaquamarine-dev (>= 0.9.3),
  libhyprwire-dev,
  hyprwayland-scanner (>= 0.3.10),
- libudis86-dev (>= 1.7.2),
+ libudis86-dev (>= 0.56.0),
  hyprland-protocols (>= 0.6.4),
 Description: Meta package for build dependencies
  Hyprland is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks.

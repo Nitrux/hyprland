@@ -63,6 +63,31 @@ shopt -s nullglob
 
 declare -A existing_debs=()
 
+archive_source_tree() {
+    local source_path="$1"
+    local destination_path="$2"
+    local submodule_path
+    local submodule_mode
+
+    git -C "$source_path" archive --format=tar HEAD | tar -xf - -C "$destination_path"
+
+    if [ -f "$source_path/.gitmodules" ]; then
+        while read -r _ submodule_path; do
+            [ -n "$submodule_path" ] || continue
+            submodule_mode="$(git -C "$source_path" ls-tree HEAD -- "$submodule_path")"
+            if [ "${submodule_mode%% *}" != 160000 ]; then
+                continue
+            fi
+            if [ ! -d "$source_path/$submodule_path" ]; then
+                printf "%s\n" "The nested source submodule is not initialized: $source_path/$submodule_path" >&2
+                exit 1
+            fi
+            mkdir -p "$destination_path/$submodule_path"
+            archive_source_tree "$source_path/$submodule_path" "$destination_path/$submodule_path"
+        done < <(git -C "$source_path" config --file .gitmodules --get-regexp path)
+    fi
+}
+
 stage_package() {
     local package="$1"
     local source_dir="$repo_root/$package/source"
@@ -85,7 +110,7 @@ stage_package() {
             printf 'The %s source submodule is not initialized.\n' "$package" >&2
             exit 1
         fi
-        git -C "$source_dir" archive --format=tar HEAD | tar -xf - -C "$package_dir"
+        archive_source_tree "$source_dir" "$package_dir"
     else
         cp -a "$source_dir"/. "$package_dir/"
     fi

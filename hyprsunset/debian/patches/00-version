@@ -35,7 +35,7 @@ Index: source/CMakeLists.txt
 +set(GIT_BRANCH "<result>")
 +## git rev-parse HEAD
 +set(GIT_COMMIT_HASH "<result>")
-+## bash -c "git show ${GIT_COMMIT_HASH} | head -n 5 | tail -n 1"
++## git show HEAD | head -n 5 | tail -n 1
 +set(GIT_COMMIT_MESSAGE "<result>")
 +## bash -c "git diff-index --quiet HEAD -- || echo \"dirty\""
 +set(GIT_DIRTY "<result>")

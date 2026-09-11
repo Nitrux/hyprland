@@ -74,6 +74,7 @@ fi
     libseat-dev \
     libspa-0.2-dev \
     libsystemd-dev \
+    libtool \
     libtomlplusplus-dev \
     libudev-dev \
     libvulkan-dev \

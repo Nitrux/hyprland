@@ -1,6 +1,7 @@
 hyprland-plugin-deps (0.56.0-1) nitrux; urgency=medium
 
   * Build packages for Nitrux.
+  * Match dependency bounds to Nitrux package versions.
 
  -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
 

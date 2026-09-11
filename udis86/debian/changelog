@@ -2,6 +2,11 @@ udis86 (0.56.0-1) nitrux; urgency=medium
 
   * Build packages for Nitrux.
   * Pin udis86 to the v1.7.2 stable release.
+  * Fix Python 3 compatibility in the opcode generator.
+  * Build and package the shared library.
+  * Install the available udis86 documentation files.
+  * Package the generated x86 documentation.
+  * Replace Debian's libudis86-0 package.
 
  -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
 

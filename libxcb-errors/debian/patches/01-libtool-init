@@ -1,0 +1,26 @@
+Description: Initialize Libtool and directory substitutions explicitly
+Author: Uri Herrera <uri_herrera@nxos.org>
+Forwarded: not-needed
+
+---
+--- source/configure.ac	2026-09-11 04:33:56.995341626 -0600
++++ source/configure.ac	2026-09-11 04:33:56.997079168 -0600
+@@ -9,6 +9,7 @@
+ # Must be called before any macros that run the compiler (like AC_PROG_LIBTOOL)
+ # to avoid autoconf errors.
+ AC_USE_SYSTEM_EXTENSIONS
++LT_INIT
+ 
+ AM_INIT_AUTOMAKE([foreign dist-xz subdir-objects])
+ 
+@@ -16,6 +17,10 @@
+ 
+ XCB_UTIL_M4_WITH_INCLUDE_PATH
+ XCB_UTIL_COMMON([1.4], [1.6])
++xcbincludedir='${includedir}/xcb'
++pkgconfigdir='${libdir}/pkgconfig'
++AC_SUBST([xcbincludedir])
++AC_SUBST([pkgconfigdir])
+ 
+ AM_PATH_PYTHON
+ 

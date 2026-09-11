@@ -10,6 +10,7 @@ Build-Depends:
  hyprland-plugin-deps,
  gcc,
  g++,
+ liblua5.4-dev,
 Standards-Version: 4.6.2
 Homepage: https://hypr.land/
 Vcs-Browser: https://github.com/hyprwm/hyprland-plugins

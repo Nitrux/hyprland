@@ -48,6 +48,8 @@ Description: Udis86 is a disassembler
 Package: libudis86.1
 Architecture: any
 Multi-Arch: same
+Conflicts: libudis86-0
+Replaces: libudis86-0
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},

@@ -11,6 +11,7 @@ Build-Depends:
  libxcb1-dev (>= 1.4),
  python3,
  xcb-proto,
+ libtool,
 Standards-Version: 4.6.2
 Homepage: <insert the upstream URL, if relevant>
 #Vcs-Browser: https://salsa.debian.org/debian/libxcb-errors

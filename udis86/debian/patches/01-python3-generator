@@ -1,0 +1,28 @@
+Description: Fix Python 3 incompatibilities in opcode generator
+Author: Uri Herrera <uri_herrera@nxos.org>
+Forwarded: not-needed
+
+---
+--- source/scripts/ud_opcode.py
++++ source/scripts/ud_opcode.py
+@@ -130,8 +130,8 @@
+             '/mod'   : lambda v: '00' if v == '!11' else '01',
+             # Mode extensions:
+             # (16, 32, 64) => (00, 01, 02)
+-            '/o'     : lambda v: "%02x" % (int(v) / 32),
+-            '/a'     : lambda v: "%02x" % (int(v) / 32),
++            '/o'     : lambda v: "%02x" % (int(v) // 32),
++            '/a'     : lambda v: "%02x" % (int(v) // 32),
+             '/m'     : lambda v: '00' if v == '!64' else '01',
+             # SSE
+             '/sse'   : lambda v: UdOpcodeTables.OpcExtIndex['sse'][v],
+@@ -228,8 +228,6 @@
+     def print_table( self, table, pfxs ):
+         print("%s   |" % pfxs)
+-        keys = table[ 'entries' ].keys()
+-        if ( len( keys ) ):
+-            keys.sort()
++        keys = sorted(table[ 'entries' ].keys())
+         for idx in keys:
+             e = table[ 'entries' ][ idx ]
+             if e[ 'type' ] == 'insn':
