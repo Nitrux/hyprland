@@ -1,7 +1,7 @@
-hyprspace for Ubuntu
+hyprspace for Debian Duke
 ------------------
 
-This package contains a build of the plugin repository `hyprspace`, matched to hyprland-unstable.
+This package contains a build of the plugin repository `hyprspace`, matched to hyprland.
 To use it, run `hyprpm add hyprspace` once to set it up (analogous to `hyprpm add https://github.com/KZDKM/hyprspace`).
 Then, enable one of the plugins contained.
 

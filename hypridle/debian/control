@@ -1,5 +1,5 @@
 Source: hypridle
-Section: universe/x11
+Section: x11
 Priority: optional
 Maintainer: Constantin Piber <cp.piber@gmail.com>
 Rules-Requires-Root: no

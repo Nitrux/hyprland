@@ -1,1 +1,0 @@
-../hyprland/prepare.sh

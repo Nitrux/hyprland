@@ -1,3 +1,9 @@
+hyprsplit (0.56.0-1) nitrux; urgency=medium
+
+  * Build packages for Nitrux.
+
+ -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
+
 hyprsplit (0.54.3~1ppa1+git202606241957-6b00b67build8) noble; urgency=medium
 
   *  Rebuild for unstable

@@ -1,3 +1,10 @@
+hyprland-plugins (0.56.0-1) nitrux; urgency=medium
+
+  * Build packages for Nitrux.
+  * Pin Hyprland plugins to the v0.56.0 stable release.
+
+ -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
+
 hyprland-plugins (0.56.0~1ppa1+git202608212222-83ce4b2) noble; urgency=medium
 
   *  Update to main 83ce4b2

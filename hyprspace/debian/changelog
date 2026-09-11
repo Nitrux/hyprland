@@ -1,3 +1,9 @@
+hyprspace (0.56.0-1) nitrux; urgency=medium
+
+  * Build packages for Nitrux.
+
+ -- Uri Herrera <uri_herrera@nxos.org>  Wed, 02 Sep 2026 00:00:00 -0600
+
 hyprspace (0.50.0~1ppa1+git202605301122-c109256build11) noble; urgency=medium
 
   *  Rebuild for unstable

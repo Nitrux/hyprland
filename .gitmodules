@@ -1,69 +1,42 @@
-[submodule "hyprlang/source"]
-	path = hyprlang/source
-	url = https://github.com/hyprwm/hyprlang.git
-[submodule "hyprcursor/source"]
-	path = hyprcursor/source
-	url = https://github.com/hyprwm/hyprcursor.git
-[submodule "hyprwayland-scanner/source"]
-	path = hyprwayland-scanner/source
-	url = https://github.com/hyprwm/hyprwayland-scanner.git
-[submodule "libxcb-errors/source"]
-	path = libxcb-errors/source
-	url = https://gitlab.freedesktop.org/xorg/lib/libxcb-errors.git
-[submodule "hyprland/source"]
-	path = hyprland/source
-	url = https://github.com/hyprwm/Hyprland.git
-[submodule "xdg-desktop-portal-hyprland/source"]
-	path = xdg-desktop-portal-hyprland/source
-	url = https://github.com/hyprwm/xdg-desktop-portal-hyprland
-[submodule "hypridle/source"]
-	path = hypridle/source
-	url = https://github.com/hyprwm/hypridle.git
-[submodule "hyprlock/source"]
-	path = hyprlock/source
-	url = https://github.com/hyprwm/hyprlock.git
-[submodule "hyprland-stable/source"]
-	path = hyprland-stable/source
-	url = https://github.com/hyprwm/Hyprland.git
-[submodule "waybar/source"]
-	path = waybar/source
-	url = https://github.com/Alexays/Waybar.git
-[submodule "hyprutils/source"]
-	path = hyprutils/source
-	url = https://github.com/hyprwm/hyprutils.git
-[submodule "pam-fprint-grosshack/source"]
-	path = pam-fprint-grosshack/source
-	url = https://gitlab.com/mishakmak/pam-fprint-grosshack.git
 [submodule "aquamarine/source"]
 	path = aquamarine/source
 	url = https://github.com/hyprwm/aquamarine.git
-[submodule "waybar-unstable/source"]
-	path = waybar-unstable/source
-	url = https://github.com/Alexays/Waybar.git
-[submodule "udis86/source"]
-	path = udis86/source
-	url = https://github.com/canihavesomecoffee/udis86.git
-[submodule "hyprland-protocols/source"]
-	path = hyprland-protocols/source
-	url = https://github.com/hyprwm/hyprland-protocols.git
-[submodule "hyprland-plugins/source"]
-	path = hyprland-plugins/source
-	url = https://github.com/hyprwm/hyprland-plugins.git
-[submodule "sdbus-cpp/source"]
-	path = sdbus-cpp/source
-	url = https://github.com/Kistler-Group/sdbus-cpp.git
-[submodule "iio-hyprland/source"]
-	path = iio-hyprland/source
-	url = https://github.com/JeanSchoeller/iio-hyprland.git
+[submodule "hyprcursor/source"]
+	path = hyprcursor/source
+	url = https://github.com/hyprwm/hyprcursor.git
 [submodule "hyprgraphics/source"]
 	path = hyprgraphics/source
 	url = https://github.com/hyprwm/hyprgraphics.git
-[submodule "hyprsysteminfo/source"]
-	path = hyprsysteminfo/source
-	url = https://github.com/hyprwm/hyprsysteminfo.git
-[submodule "hyprsunset/source"]
-	path = hyprsunset/source
-	url = https://github.com/hyprwm/hyprsunset.git
+[submodule "glaze/source"]
+	path = glaze/source
+	url = https://github.com/stephenberry/glaze.git
+[submodule "hypridle/source"]
+	path = hypridle/source
+	url = https://github.com/hyprwm/hypridle.git
+[submodule "hyprland-guiutils/source"]
+	path = hyprland-guiutils/source
+	url = https://github.com/hyprwm/hyprland-guiutils.git
+[submodule "hyprland-plugins/source"]
+	path = hyprland-plugins/source
+	url = https://github.com/hyprwm/hyprland-plugins.git
+[submodule "hyprland-protocols/source"]
+	path = hyprland-protocols/source
+	url = https://github.com/hyprwm/hyprland-protocols.git
+[submodule "hyprland-qt-support/source"]
+	path = hyprland-qt-support/source
+	url = https://github.com/hyprwm/hyprland-qt-support.git
+[submodule "hyprland/source"]
+	path = hyprland/source
+	url = https://github.com/hyprwm/Hyprland.git
+[submodule "hyprlang/source"]
+	path = hyprlang/source
+	url = https://github.com/hyprwm/hyprlang.git
+[submodule "hyprlauncher/source"]
+	path = hyprlauncher/source
+	url = https://github.com/hyprwm/hyprlauncher.git
+[submodule "hyprlock/source"]
+	path = hyprlock/source
+	url = https://github.com/hyprwm/hyprlock.git
 [submodule "hyprpaper/source"]
 	path = hyprpaper/source
 	url = https://github.com/hyprwm/hyprpaper.git
@@ -73,42 +46,48 @@
 [submodule "hyprpolkitagent/source"]
 	path = hyprpolkitagent/source
 	url = https://github.com/hyprwm/hyprpolkitagent.git
-[submodule "glaze/source"]
-	path = glaze/source
-	url = https://github.com/stephenberry/glaze.git
-[submodule "hyprland-qt-support/source"]
-	path = hyprland-qt-support/source
-	url = https://github.com/hyprwm/hyprland-qt-support.git
-[submodule "uwsm/source"]
-	path = uwsm/source
-	url = https://github.com/Vladimir-csp/uwsm.git
-[submodule "fuzzel/source"]
-	path = fuzzel/source
-	url = https://codeberg.org/dnkl/fuzzel.git
-[submodule "hy3/source"]
-	path = hy3/source
-	url = https://github.com/outfoxxed/hy3.git
+[submodule "hyprpwcenter/source"]
+	path = hyprpwcenter/source
+	url = https://github.com/hyprwm/hyprpwcenter.git
+[submodule "hyprshutdown/source"]
+	path = hyprshutdown/source
+	url = https://github.com/hyprwm/hyprshutdown.git
 [submodule "hyprspace/source"]
 	path = hyprspace/source
 	url = https://github.com/KZDKM/Hyprspace.git
 [submodule "hyprsplit/source"]
 	path = hyprsplit/source
 	url = https://github.com/shezdy/hyprsplit.git
+[submodule "hyprsunset/source"]
+	path = hyprsunset/source
+	url = https://github.com/hyprwm/hyprsunset.git
+[submodule "hyprsysteminfo/source"]
+	path = hyprsysteminfo/source
+	url = https://github.com/hyprwm/hyprsysteminfo.git
 [submodule "hyprtoolkit/source"]
 	path = hyprtoolkit/source
 	url = https://github.com/hyprwm/hyprtoolkit.git
-[submodule "hyprland-guiutils/source"]
-	path = hyprland-guiutils/source
-	url = https://github.com/hyprwm/hyprland-guiutils.git
+[submodule "hyprutils/source"]
+	path = hyprutils/source
+	url = https://github.com/hyprwm/hyprutils.git
+[submodule "hyprwayland-scanner/source"]
+	path = hyprwayland-scanner/source
+	url = https://github.com/hyprwm/hyprwayland-scanner.git
 [submodule "hyprwire/source"]
 	path = hyprwire/source
 	url = https://github.com/hyprwm/hyprwire.git
-[submodule "hyprshutdown/source"]
-	path = hyprshutdown/source
-	url = https://github.com/hyprwm/hyprshutdown.git
-[submodule "hyprlauncher/source"]
-	path = hyprlauncher/source
-	url = https://github.com/hyprwm/hyprlauncher.git
-[submodule "hyprpwcenter/source"]
-	path = hyprpwcenter/source
-	url = https://github.com/hyprwm/hyprpwcenter.git
+[submodule "iio-hyprland/source"]
+	path = iio-hyprland/source
+	url = https://github.com/JeanSchoeller/iio-hyprland.git
+[submodule "libxcb-errors/source"]
+	path = libxcb-errors/source
+	url = https://gitlab.freedesktop.org/xorg/lib/libxcb-errors.git
+[submodule "sdbus-cpp/source"]
+	path = sdbus-cpp/source
+	url = https://github.com/Kistler-Group/sdbus-cpp.git
+[submodule "udis86/source"]
+	path = udis86/source
+	url = https://github.com/canihavesomecoffee/udis86.git
+[submodule "xdg-desktop-portal-hyprland/source"]
+	path = xdg-desktop-portal-hyprland/source
+	url = https://github.com/hyprwm/xdg-desktop-portal-hyprland

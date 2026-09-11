@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2154
+# sourcefolder, buildfolder, and debianfolder are supplied by the package builder.
 set -xe
 cd "$sourcefolder"
 

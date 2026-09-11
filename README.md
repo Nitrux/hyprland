@@ -1,85 +1,52 @@
-# hyprland-ppa
+# Hyprland Packages for Nitrux
 
-This repository contains the `debian/` files for my PPA.
-These files detail the recipe for building a .deb package.
-Currently these work for Ubuntu 24.04 Noble and 26.04 Resolute.
+[![Generic badge](https://img.shields.io/badge/Arch-amd64%20%7C%20arm64-yellowgreen.svg)](https://shields.io/)
 
-Published packages are available here: https://launchpad.net/~cppiber/+archive/ubuntu/hyprland
+<p align="center">
+  <img width="128" height="128" src="https://raw.githubusercontent.com/Nitrux/luv-icon-theme/master/Luv/apps/64/wayland.svg">
+</p>
 
-## Packages
+# Introduction
 
-Packages are organized into subfolders.
-Each package contains two folders: `debian/` and `source/`.
-The source code of the packages is not stored here and instead embedded as a git submodule.
-Hence, the debian subdirectory instead does not live in the source code.
-This repository contains some scripts to deal with this.
+This repository builds the Nitrux Hyprland package set: the Hyprland compositor, supporting libraries and tools, related applications, plugins, and the Hyprland desktop portal.
 
-To initialize all packages:
+# Building
 
-```console
-$ git clone https://github.com/cpiber/hyprland-ppa.git  # Clone this repository
-$ git submodule update --init --recursive  # Fetch all package sources
+The package version is read from `VERSION`.
+
+Initialize the package sources and install the build dependencies:
+
+```sh
+git submodule update --init --recursive
+sudo ./scripts/install-build-deps.sh
 ```
 
-## Scripts
+Build the complete package set:
 
-### Updating a package
-
-```console
-$ ./scripts/update.sh <package> [tag-override]
+```sh
+./scripts/build-deb.sh
 ```
 
-This script will fetch the latest changes for the specified package.
-All packages except `hyprland` and `waybar-unstable` will check out the lastest tag.
-The two mentioned exceptions will check out the lastest commit on main/master.  
-If `tag-override` is specified, instead of the latest tag, the specific tag will be checked out.
+The builder supports native `amd64` and `arm64` builds.
 
-The script additionally generates the appropriate changelog from the commit names.
-If the version did not change, the script exists with code 1 and does not apply any changes.
+The stable build contains only the release-pinned package sources listed by
+`scripts/build-deb.sh`; packages without a stable release pin are not built.
 
-### Building a package
 
-```console
-$ ./scripts/open-build.sh <package> [<distribution>]
-```
+# Licensing
 
-This script prepares a build area in `/tmp/hyprland-ppa/` and opens a shell there for building.
-It copies both the `source/` and `debian/` folders together into the expected structure.
-Some packages additionally contain a `prepare.sh` file, which is executed in the resulting build environment.
-This may be used to exclude files from the final archive.
+This repository contains files under multiple licenses.
 
-As the last step, the script generates the `<package>_<version>.orig.tar.xz` file necessary for building the package.
-The actual build is left to the user.
+- Repository build and packaging automation is licensed under **BSD-3-Clause** (see `LICENSE`).
+- Debian package metadata keeps its respective upstream licensing.
+- Hyprland source, installer, and package content retain their applicable upstream licensing.
 
-The optional `<distribution>` argument may be used to build a separate version for a different distribution than specified in the `debian/` folder.
-This option generates a new entry in the changelog and appends `~1<distribution>1` to the version field, allowing a rebuild with no changes for this distribution.
-Make sure to use the same orig file, as launchpad refuses to accept one with a different checksum.
+# Issues
 
-Information about my build setup: https://github.com/cpiber/ppa/blob/main/build.md
+If you find problems with the contents of this repository, please create an issue and use the **🐞 Bug report** template.
 
-### No-change rebuild
+## Submitting a bug report
 
-```console
-$ ./scripts/rebuild.sh <package>
-$ ./scripts/rebuild-depends.sh <packages...>
-```
+Before submitting a bug, you should look at the [existing bug reports](https://github.com/Nitrux/nvidia-open-kernel-module/issues) to verify that no one has reported the bug already.
 
-The first script simply increments the patch part of the version number (new changelog entry).
-This allows a rebuild of the package when no source changes were found, as necessary when a dependency changes (with ABI changes) or a new patch is introduced.
-
-The second script instead takes a package name (or multiple) and asks `apt-cache` for dependents.
-It then calls the former script to rebuild all reverse dependencies.
-Use this when a breaking change is introduced and a new build needs to be kicked off for depending packages.
-
-See [Building a package](#building-a-package) for actually starting the build.
-
-### Working with patches
-
-The unconventional location of the `debian/` folder means existing tooling will not automatically pick it up.
-When working with `quilt`, I recommend the following setting:
-
-```console
-$ export QUILT_PATCHES=../debian/patches
-```
-
-With this, `quilt` will pick up the patches and patches can be applied as usual, see [the manual](https://www.debian.org/doc/manuals/maint-guide/modify.en.html).
+©2026 Nitrux Latinoamericana S.C.

@@ -1,5 +1,5 @@
-Source: hyprland-unstable
-Section: universe/x11
+Source: hyprland
+Section: x11
 Priority: optional
 Maintainer: Constantin Piber <cp.piber@gmail.com>
 Rules-Requires-Root: no
@@ -57,7 +57,7 @@ Homepage: https://hypr.land/
 Vcs-Browser: https://github.com/hyprwm/Hyprland
 Vcs-Git: https://github.com/hyprwm/Hyprland.git
 
-Package: hyprland-unstable-docs
+Package: hyprland-docs
 Architecture: all
 Multi-Arch: foreign
 Depends:
@@ -68,7 +68,7 @@ Description: Hyprland is a dynamic tiling Wayland compositor
  .
  This package contains the architecture-independent documentation.
 
-Package: hyprland-unstable
+Package: hyprland
 Architecture: any
 Multi-Arch: foreign
 Depends:
@@ -76,26 +76,14 @@ Depends:
  ${misc:Depends},
  wayland-protocols,
  hyprland-data,
-Provides:
- hyprland,
-Conflicts:
- hyprland,
 Recommends:
  xdg-desktop-portal-hyprland | xdg-desktop-portal-wlr,
  xdg-desktop-portal-gtk,
  sway-notification-center | dunst,
  pipewire,
  wireplumber,
- hyprland-guiutils,
 Suggests:
- hyprland-plugin-deps,
- hyprland-unstable-docs,
- hypridle,
- hyprlock,
- hyprpaper,
- hyprpicker,
- hyprsunset,
- hyprsysteminfo,
+ hyprland-docs,
 Description: Hyprland is a dynamic tiling Wayland compositor
  Hyprland is a dynamic tiling Wayland compositor based on wlroots that doesn't sacrifice on its looks.
  It provides the latest Wayland features, is highly customizable, has all the eyecandy, the most powerful plugins, easy IPC, much more QoL stuff than other wlr-based compositors and more...

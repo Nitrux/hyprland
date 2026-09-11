@@ -1,5 +1,5 @@
 Source: hyprwayland-scanner
-Section: universe/libdevel
+Section: libdevel
 Priority: optional
 Maintainer: Constantin Piber <cp.piber@gmail.com>
 Rules-Requires-Root: no

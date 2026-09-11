@@ -1,8 +1,0 @@
-Hyprland for Ubuntu
-------------------
-
-This package includes a number of patches, as found in this repository, significantly:
-- `02-revert-set-buffer-size`: Revert [3ddb16b](https://github.com/hyprwm/hyprland/commit/3ddb16bd5bb7146d125a7d68e4e9f3b54c381a20), which requires a version of wayland-server not yet available on noble or oracular. The commit sets an optional property to limit buffer size.
-- `99-hyprpm-global-headers`: Make `hyprpm` recognize the headers bundled with the package.
-
- -- Constantin Piber <cp.piber@gmail.com>  Thu, 30 May 2024 21:02:49 +0200
