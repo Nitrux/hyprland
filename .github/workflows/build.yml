@@ -41,6 +41,8 @@ jobs:
           submodules: false
       - name: Mark workspace as safe for Git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Rewrite the freedesktop submodule URL to HTTPS
+        run: git config --global url."https://gitlab.freedesktop.org/xorg/util/xcb-util-m4.git".insteadOf "git://anongit.freedesktop.org/xcb/util-common-m4.git"
       - name: Initialize package sources
         run: git submodule update --init --recursive
       - name: Verify pinned package sources
@@ -98,6 +100,8 @@ jobs:
           submodules: false
       - name: Mark workspace as safe for Git
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Rewrite the freedesktop submodule URL to HTTPS
+        run: git config --global url."https://gitlab.freedesktop.org/xorg/util/xcb-util-m4.git".insteadOf "git://anongit.freedesktop.org/xcb/util-common-m4.git"
       - name: Initialize package sources
         run: git submodule update --init --recursive
       - name: Verify pinned package sources
