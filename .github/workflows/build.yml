@@ -61,7 +61,7 @@ jobs:
           name: deb-packages-amd64
           path: ./build/*.deb
       - name: Upload packages to Packagecloud
-        run: package_cloud push nitrux/hyprland/debian/nitrux ./build/*.deb --skip-errors
+        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb --skip-errors
 
   build-arm64:
     runs-on: ubuntu-24.04-arm
@@ -120,4 +120,4 @@ jobs:
           name: deb-packages-arm64
           path: ./build/*.deb
       - name: Upload packages to Packagecloud
-        run: package_cloud push nitrux/hyprland/debian/nitrux ./build/*.deb --skip-errors
+        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb --skip-errors
