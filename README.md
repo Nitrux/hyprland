@@ -12,8 +12,6 @@ This repository builds the Nitrux Hyprland package set: the Hyprland compositor,
 
 # Building
 
-The package version is read from `VERSION`.
-
 Initialize the package sources and install the build dependencies:
 
 ```sh

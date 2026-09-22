@@ -21,6 +21,12 @@ if [ -z "$repository_version" ]; then
     exit 1
 fi
 
+nitrux_revision="${repository_version##*-}"
+if [[ "$nitrux_revision" == "$repository_version" || ! "$nitrux_revision" =~ ^[0-9]+$ ]]; then
+    printf "The repository VERSION must end with a numeric Debian revision.\n" >&2
+    exit 1
+fi
+
 packages=(
     hyprland-data
     hyprutils
@@ -133,16 +139,53 @@ prepare_package() {
     fi
 }
 
+source_version() {
+    local package="$1"
+    local source_dir="$repo_root/$package/source"
+    local version_file
+    local version
+
+    case "$package" in
+        hyprland-data|hyprland-plugins)
+            version_file="$repo_root/hyprland/source/VERSION"
+            ;;
+        hyprland-plugin-deps)
+            printf "0\n"
+            return
+            ;;
+        *)
+            version_file="$source_dir/VERSION"
+            ;;
+    esac
+
+    if [ -f "$version_file" ]; then
+        printf '%s\n' "$(tr -d '[:space:]' < "$version_file")"
+        return
+    fi
+
+    version="$(git -C "$source_dir" describe --tags --abbrev=0 2>/dev/null || true)"
+    version="${version#v}"
+    if [[ "$version" =~ ([0-9]+([.][0-9]+)+)$ ]]; then
+        printf "%s\n" "${BASH_REMATCH[1]}"
+        return
+    fi
+
+    printf "Unable to determine the upstream version for %s.\n" "$package" >&2
+    exit 1
+}
+
 set_package_version() {
     local package="$1"
     local package_dir="$work_root/$package"
     local source_package
+    local upstream_version
     local package_version
 
     source_package="$(awk -F': ' '$1 == "Source" {print $2; exit}' "$package_dir/debian/control")"
-    package_version="$repository_version"
+    upstream_version="$(source_version "$package")"
+    package_version="${upstream_version}-${nitrux_revision}"
 
-    if [ -z "$source_package" ] || [ -z "$package_version" ]; then
+    if [ -z "$source_package" ] || [ -z "$upstream_version" ] || [ -z "$package_version" ]; then
         printf 'Unable to determine the package name or version for %s.\n' "$package" >&2
         exit 1
     fi

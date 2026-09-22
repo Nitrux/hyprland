@@ -33,9 +33,7 @@ jobs:
           apt update && apt -o Dpkg::Options::=--force-overwrite full-upgrade -y
 
       - name: Setup amd64 environment
-        run: apt install -y build-essential devscripts git gnupg ruby-full
-      - name: Install Packagecloud CLI
-        run: gem install package_cloud
+        run: apt install -y build-essential devscripts git gnupg
       - uses: actions/checkout@v4
         with:
           submodules: false
@@ -60,8 +58,6 @@ jobs:
         with:
           name: deb-packages-amd64
           path: ./build/*.deb
-      - name: Upload packages to Packagecloud
-        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb --skip-errors
 
   build-arm64:
     runs-on: ubuntu-24.04-arm
@@ -92,9 +88,7 @@ jobs:
           apt update && apt -o Dpkg::Options::=--force-overwrite full-upgrade -y
 
       - name: Setup arm64 environment
-        run: apt install -y build-essential devscripts git gnupg ruby-full
-      - name: Install Packagecloud CLI
-        run: gem install package_cloud
+        run: apt install -y build-essential devscripts git gnupg
       - uses: actions/checkout@v4
         with:
           submodules: false
@@ -119,5 +113,43 @@ jobs:
         with:
           name: deb-packages-arm64
           path: ./build/*.deb
+
+  publish:
+    needs: [build-amd64, build-arm64]
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:stable-20260713
+      env:
+        DEBIAN_FRONTEND: noninteractive
+        PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+
+    steps:
+      - name: Install Packagecloud CLI dependencies
+        run: apt update && apt install -y ca-certificates curl jq ruby-full
+      - name: Install Packagecloud CLI
+        run: gem install package_cloud
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: deb-packages-*
+          path: ./build
+          merge-multiple: true
+      - name: Remove existing packages from Packagecloud
+        run: |
+          set -euo pipefail
+          package_list=$(mktemp)
+          trap 'rm -f "$package_list"' EXIT
+          page=1
+          while true; do
+            response=$(curl --fail --silent --show-error --user "$PACKAGECLOUD_TOKEN:" \
+              "https://packagecloud.io/api/v1/repos/nitrux/hyprland/packages.json?page=$page&per_page=100")
+            jq -r '.[] | select(.type == "deb" and .distro_version == "debian/duke") | .filename' <<<"$response" >> "$package_list"
+            page_count=$(jq 'length' <<<"$response")
+            [ "$page_count" -gt 0 ] || break
+            page=$((page + 1))
+          done
+          while IFS= read -r filename; do
+            [ -n "$filename" ] || continue
+            package_cloud yank nitrux/hyprland/debian/duke "$filename"
+          done < "$package_list"
       - name: Upload packages to Packagecloud
-        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb --skip-errors
+        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb
