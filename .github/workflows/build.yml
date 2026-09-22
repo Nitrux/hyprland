@@ -4,13 +4,42 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-amd64:
+  preflight:
     runs-on: ubuntu-24.04
     container:
       image: debian:stable-20260713
       env:
         DEBIAN_FRONTEND: noninteractive
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
+
+    steps:
+      - name: Install Packagecloud CLI dependencies
+        run: apt update && apt install -y build-essential ca-certificates curl jq ruby-full
+      - name: Validate Packagecloud access
+        run: |
+          set -euo pipefail
+          [ -n "${PACKAGECLOUD_TOKEN:-}" ] || {
+            echo "PACKAGECLOUD_TOKEN is not configured."
+            exit 1
+          }
+          gem install --no-document package_cloud
+          package_cloud help >/dev/null
+          curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+            --user "$PACKAGECLOUD_TOKEN:" \
+            "https://packagecloud.io/api/v1/repos/nitrux/hyprland/packages.json?page=1&per_page=1" |
+            jq -e 'type == "array"' >/dev/null
+          curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+            --user "$PACKAGECLOUD_TOKEN:" \
+            "https://packagecloud.io/api/v1/distributions.json" |
+            jq -e '.deb[] | select(.index_name == "debian") | .versions[] | select(.index_name == "duke")' >/dev/null
+
+  build-amd64:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    container:
+      image: debian:stable-20260713
+      env:
+        DEBIAN_FRONTEND: noninteractive
 
     steps:
       - name: Install CA certificates
@@ -60,12 +89,12 @@ jobs:
           path: ./build/*.deb
 
   build-arm64:
+    needs: preflight
     runs-on: ubuntu-24.04-arm
     container:
       image: arm64v8/debian:stable-20260713
       env:
         DEBIAN_FRONTEND: noninteractive
-        PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
 
     steps:
       - name: Install CA certificates
@@ -115,7 +144,7 @@ jobs:
           path: ./build/*.deb
 
   publish:
-    needs: [build-amd64, build-arm64]
+    needs: [preflight, build-amd64, build-arm64]
     runs-on: ubuntu-24.04
     container:
       image: debian:stable-20260713
@@ -125,31 +154,138 @@ jobs:
 
     steps:
       - name: Install Packagecloud CLI dependencies
-        run: apt update && apt install -y ca-certificates curl jq ruby-full
+        run: apt update && apt install -y build-essential ca-certificates curl jq ruby-full
       - name: Install Packagecloud CLI
-        run: gem install package_cloud
+        run: gem install --no-document package_cloud
       - uses: actions/download-artifact@v4
         with:
-          pattern: deb-packages-*
-          path: ./build
-          merge-multiple: true
-      - name: Remove existing packages from Packagecloud
+          name: deb-packages-amd64
+          path: ./artifacts/amd64
+      - uses: actions/download-artifact@v4
+        with:
+          name: deb-packages-arm64
+          path: ./artifacts/arm64
+      - name: Assemble and validate packages
         run: |
           set -euo pipefail
-          package_list=$(mktemp)
-          trap 'rm -f "$package_list"' EXIT
-          page=1
-          while true; do
-            response=$(curl --fail --silent --show-error --user "$PACKAGECLOUD_TOKEN:" \
-              "https://packagecloud.io/api/v1/repos/nitrux/hyprland/packages.json?page=$page&per_page=100")
-            jq -r '.[] | select(.type == "deb" and .distro_version == "debian/duke") | .filename' <<<"$response" >> "$package_list"
-            page_count=$(jq 'length' <<<"$response")
-            [ "$page_count" -gt 0 ] || break
-            page=$((page + 1))
+          mkdir -p ./build
+          find ./build -maxdepth 1 -type f -name '*.deb' -delete
+          mapfile -d '' amd64_packages < <(find ./artifacts/amd64 -type f -name '*.deb' -print0)
+          mapfile -d '' arm64_packages < <(find ./artifacts/arm64 -type f -name '*.deb' -print0)
+          [ "${#amd64_packages[@]}" -gt 0 ] || {
+            echo "No amd64 Debian packages were downloaded."
+            exit 1
+          }
+          [ "${#arm64_packages[@]}" -gt 0 ] || {
+            echo "No arm64 Debian packages were downloaded."
+            exit 1
+          }
+          for package in "${amd64_packages[@]}" "${arm64_packages[@]}"; do
+            filename="${package##*/}"
+            destination="./build/$filename"
+            if [ -e "$destination" ]; then
+              package_arch="$(dpkg-deb -f "$package" Architecture)"
+              destination_arch="$(dpkg-deb -f "$destination" Architecture)"
+              if [ "$package_arch" != all ] || [ "$destination_arch" != all ]; then
+                echo "Duplicate non-all package filename: $filename"
+                exit 1
+              fi
+              echo "Using the amd64 copy of architecture-independent package $filename."
+              continue
+            fi
+            cp "$package" "$destination"
           done
+          package_count="$(find ./build -maxdepth 1 -type f -name '*.deb' | wc -l)"
+          [ "$package_count" -gt 0 ] || {
+            echo "No Debian packages were assembled."
+            exit 1
+          }
+          echo "Assembled $package_count Debian packages."
+      - name: Remove existing packages and upload new packages
+        run: |
+          set -euo pipefail
+          packagecloud_target=nitrux/hyprland/debian/duke
+          api_url=https://packagecloud.io/api/v1/repos/nitrux/hyprland/packages.json
+
+          list_target_packages() {
+            local page=1
+            local response
+            local page_count
+            while true; do
+              response="$(curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+                --user "$PACKAGECLOUD_TOKEN:" \
+                "$api_url?page=$page&per_page=100")"
+              jq -e 'type == "array"' <<<"$response" >/dev/null
+              jq -r '.[] | select(.type == "deb" and .distro_version == "debian/duke") | .filename' <<<"$response"
+              page_count="$(jq 'length' <<<"$response")"
+              [ "$page_count" -gt 0 ] || break
+              page=$((page + 1))
+            done
+          }
+
+          yank_package() {
+            local filename="$1"
+            local attempt
+            local remaining
+            for attempt in 1 2 3 4 5; do
+              if package_cloud yank "$packagecloud_target" "$filename"; then
+                return 0
+              fi
+              if remaining="$(list_target_packages)" && ! grep -Fqx "$filename" <<<"$remaining"; then
+                return 0
+              fi
+              [ "$attempt" -lt 5 ] || return 1
+              sleep $((attempt * 5))
+            done
+          }
+
+          package_list="$(mktemp)"
+          trap "rm -f \"$package_list\"" EXIT
+          list_target_packages > "$package_list"
           while IFS= read -r filename; do
             [ -n "$filename" ] || continue
-            package_cloud yank nitrux/hyprland/debian/duke "$filename"
+            yank_package "$filename"
           done < "$package_list"
-      - name: Upload packages to Packagecloud
-        run: package_cloud push nitrux/hyprland/debian/duke ./build/*.deb
+
+          for attempt in 1 2 3 4 5 6; do
+            remaining="$(list_target_packages)"
+            [ -z "$remaining" ] && break
+            [ "$attempt" -lt 6 ] || {
+              echo "Packagecloud still lists packages after cleanup:"
+              printf '%s\n' "$remaining"
+              exit 1
+            }
+            sleep 10
+          done
+
+          push_packages() {
+            local attempt
+            for attempt in 1 2 3 4 5; do
+              if package_cloud push "$packagecloud_target" ./build/*.deb "$@"; then
+                return 0
+              fi
+              [ "$attempt" -lt 5 ] || return 1
+              sleep $((attempt * 5))
+            done
+          }
+
+          if ! push_packages; then
+            echo "Retrying the upload while skipping packages already accepted by Packagecloud."
+            push_packages --skip-errors
+          fi
+
+          expected="$(mktemp)"
+          actual="$(mktemp)"
+          trap "rm -f \"$package_list\" \"$expected\" \"$actual\"" EXIT
+          find ./build -maxdepth 1 -type f -name '*.deb' -printf '%f\n' | sort > "$expected"
+          for attempt in 1 2 3 4 5 6; do
+            list_target_packages | sort -u > "$actual"
+            missing="$(comm -23 "$expected" "$actual")"
+            [ -z "$missing" ] && break
+            [ "$attempt" -lt 6 ] || {
+              echo "Packagecloud is missing uploaded packages:"
+              printf '%s\n' "$missing"
+              exit 1
+            }
+            sleep 10
+          done
