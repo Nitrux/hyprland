@@ -16,6 +16,7 @@ jobs:
       - name: Install Packagecloud CLI dependencies
         run: apt update && apt install -y build-essential ca-certificates curl jq ruby-full
       - name: Validate Packagecloud access
+        shell: bash
         run: |
           set -euo pipefail
           [ -n "${PACKAGECLOUD_TOKEN:-}" ] || {
@@ -166,6 +167,7 @@ jobs:
           name: deb-packages-arm64
           path: ./artifacts/arm64
       - name: Assemble and validate packages
+        shell: bash
         run: |
           set -euo pipefail
           mkdir -p ./build
@@ -202,6 +204,7 @@ jobs:
           }
           echo "Assembled $package_count Debian packages."
       - name: Remove existing packages and upload new packages
+        shell: bash
         run: |
           set -euo pipefail
           packagecloud_target=nitrux/hyprland/debian/duke
